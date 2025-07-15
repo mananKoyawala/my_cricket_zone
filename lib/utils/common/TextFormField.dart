@@ -34,7 +34,6 @@ Widget textFormField({
   VoidCallback? onTap,
   bool? onlyNumbers,
 }) {
-  double bottomInsets = MediaQuery.of(context).viewInsets.bottom;
   return TextFormField(
       onFieldSubmitted: onFieldSubmitted,
       readOnly: readOnly ?? false,

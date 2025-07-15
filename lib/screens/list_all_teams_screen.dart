@@ -62,7 +62,7 @@ class _ListAllTeamsScreenState extends State<ListAllTeamsScreen> {
                         size: 28,
                       )),
                   sizeW10(),
-                  text(text: "Add teams", fontSize: 26),
+                  text(text: "All teams", fontSize: 26),
                 ],
               ),
               sizeH10(),

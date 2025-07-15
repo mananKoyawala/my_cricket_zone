@@ -48,6 +48,8 @@ class CreateMatchContoller extends GetxController {
       if (formKey.currentState!.validate()) {
         team_A_id = getId(selected_team_A);
         team_B_id = getId(selected_team_B);
+        printDebug(team_A_id);
+        printDebug(team_B_id);
         bool created = await helper.createMatch(
             dateCtr.text.trim(),
             placeCtr.text.trim(),
@@ -63,7 +65,7 @@ class CreateMatchContoller extends GetxController {
         toast("Failed to create a match");
         return;
       }
-      toast("Ohh no");
+      toast("Please complete all fields");
     } finally {
       AppLoader.dismissLoader();
     }
