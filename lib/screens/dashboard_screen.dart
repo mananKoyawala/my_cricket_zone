@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interview/db_helper/db_helper.dart';
 import 'package:interview/models/grid_items.dart';
 import 'package:interview/screens/add_team_screen.dart';
+import 'package:interview/screens/create_match_screen.dart';
 import 'package:interview/screens/list_all_teams_screen.dart';
 import 'package:interview/utils/common/PackageConstants.dart';
 import 'package:interview/utils/common/RippleEffect/RippleEffectContainer.dart';
@@ -22,7 +23,21 @@ class DashboardScreen extends StatelessWidget {
     GridItems(
         title: "Show all teams",
         onTap: () {
-          Navigation.pushMaterial(ListAllTeamsScreen());
+          Navigation.pushMaterial(const ListAllTeamsScreen());
+        }),
+    GridItems(
+        title: "Create match",
+        onTap: () async {
+          if ((await DBHelper().getAllTeams()).length <= 1) {
+            toast("No enough teams to create match");
+            return;
+          }
+          Navigation.pushMaterial(CreateMatchScreen());
+        }),
+    GridItems(
+        title: "All matches",
+        onTap: () async {
+          printDebug(DBHelper().getAllMatches());
         }),
   ];
   @override

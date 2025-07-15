@@ -52,7 +52,14 @@ Widget textFormField({
               FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
             ]
           : null,
-      scrollPadding: EdgeInsets.only(bottom: bottomInsets + 65.0),
+      // scrollPadding: EdgeInsets.only(bottom: bottomInsets + 65.0),
+      scrollPadding: EdgeInsets.only(
+        top: MediaQuery.of(context).viewInsets.top + 60.0,
+        bottom: MediaQuery.of(
+              context,
+            ).viewInsets.bottom +
+            20.0,
+      ),
       onChanged: onChanged,
       maxLines: maxLines,
       style: textStyle ??

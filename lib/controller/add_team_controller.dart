@@ -4,6 +4,7 @@ import 'package:interview/db_helper/db_helper.dart';
 import 'package:interview/models/create_member.dart';
 import 'package:interview/utils/common/PackageConstants.dart';
 import 'package:interview/utils/common/Utils.dart';
+import 'package:interview/utils/common/loader.dart';
 
 class AddTeamController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -23,35 +24,45 @@ class AddTeamController extends GetxController {
 
   onSubmit() async {
     unfocus();
-    if (formKey.currentState!.validate()) {
-      members.clear();
-      members = teamMembers
-          .map((e) => e.name.text.trim())
-          .where((name) => name.isNotEmpty)
-          .toList();
-      bool notAllowed =
-          await helper.checkTeamAndMemberExists(teamName.text.trim(), members);
-
-      if (notAllowed) {
-        return;
-      }
-      int id = await helper.createTeam(
-          teamName.text.trim(), teamDescripiton.text.trim());
-      if (id <= 0) {
-        return;
-      }
-
-      for (var player in teamMembers) {
-        bool success = await helper.addTeamMember(id, player.name.text.trim(),
-            player.age.text.trim(), player.height.text.trim());
-        if (!success) {
-          printDebug("Failed to add player ${player.name}");
+    AppLoader.showLoader();
+    try {
+      if (formKey.currentState!.validate()) {
+        members.clear();
+        members = teamMembers
+            .map((e) => e.name.text.trim())
+            .where((name) => name.isNotEmpty)
+            .toList();
+        var uniquePlayers = members;
+        if (!(members.length == uniquePlayers.toSet().length)) {
+          toast("Player name must be unique");
+          return;
         }
+        bool notAllowed = await helper.checkTeamAndMemberExists(
+            teamName.text.trim(), members);
+
+        if (notAllowed) {
+          return;
+        }
+        int id = await helper.createTeam(
+            teamName.text.trim(), teamDescripiton.text.trim());
+        if (id <= 0) {
+          return;
+        }
+
+        for (var player in teamMembers) {
+          bool success = await helper.addTeamMember(id, player.name.text.trim(),
+              player.age.text.trim(), player.height.text.trim());
+          if (!success) {
+            printDebug(">>> Failed to add player ${player.name}");
+          }
+        }
+        toast("Team is added with players");
+        resetAll();
+        Navigation.pop();
+        return;
       }
-      toast("Team is added with players");
-      resetAll();
-      Navigation.pop();
-      return;
+    } finally {
+      AppLoader.dismissLoader();
     }
     toast("Please complete all fields");
   }

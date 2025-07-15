@@ -1,8 +1,11 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:interview/models/team_model.dart';
 import 'package:interview/utils/common/PackageConstants.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import '../models/match_model.dart';
 import '../models/team_members_model.dart';
 
 class DBHelper {
@@ -170,7 +173,36 @@ class DBHelper {
         // Convert team + members to TeamModel
         teams.add(TeamModel.fromMap(team, teamMembers));
       }
+      print(teams);
       return teams;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<bool> createMatch(String date, String place, String total_overs,
+      int team_a_id, int team_b_id) async {
+    try {
+      final db = await openTeamDatabase();
+      int id = await db.insert(match_table, {
+        "date": date,
+        "place": place,
+        "total_overs": total_overs,
+        "team_a_id": team_a_id,
+        "team_b_id": team_b_id,
+      });
+      return id != 0;
+    } catch (e) {
+      toast("Failed to create a match");
+      return false;
+    }
+  }
+
+  Future<List<MatchModel>> getAllMatches() async {
+    try {
+      final db = await openTeamDatabase();
+      printDebug(await db.query(match_table));
+      return [];
     } catch (e) {
       return [];
     }

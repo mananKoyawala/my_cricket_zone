@@ -5,11 +5,23 @@ import 'package:interview/utils/common/TextFormField.dart';
 import 'package:interview/utils/common/Text_Button.dart';
 import 'package:interview/utils/common/Utils.dart';
 import 'package:get/get.dart';
+import 'package:interview/utils/common/loader.dart';
 
-class AddTeamScreen extends StatelessWidget {
+class AddTeamScreen extends StatefulWidget {
   AddTeamScreen({super.key});
 
+  @override
+  State<AddTeamScreen> createState() => _AddTeamScreenState();
+}
+
+class _AddTeamScreenState extends State<AddTeamScreen> {
   AddTeamController controller = Get.find<AddTeamController>();
+
+  @override
+  void dispose() {
+    AppLoader.dismissLoader();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
