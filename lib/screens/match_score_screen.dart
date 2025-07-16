@@ -50,7 +50,6 @@ class MatchScoreScreen extends StatelessWidget {
               ),
             ),
             sizeH10(),
-            // TODO : show only if match is started
             Expanded(
               child: Obx(
                 () => controller.loading.value
@@ -60,15 +59,6 @@ class MatchScoreScreen extends StatelessWidget {
                     : SingleChildScrollView(
                         child: Column(
                           children: [
-                            CP(
-                              h: 16,
-                              child: Container(
-                                height: getScreenHeight(context) * .3,
-                                width: getScreenWidth(context),
-                                color: Colors.purple.shade100,
-                              ),
-                            ),
-                            sizeH25(),
                             CP(
                               h: 16,
                               child: Column(
@@ -249,7 +239,6 @@ class MatchScoreScreen extends StatelessWidget {
                       ),
               ),
             ),
-
             sizeH10(),
           ],
         ),

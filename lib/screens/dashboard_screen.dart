@@ -8,6 +8,7 @@ import 'package:interview/screens/add_team_screen.dart';
 import 'package:interview/screens/all_match_screen.dart';
 import 'package:interview/screens/create_match_screen.dart';
 import 'package:interview/screens/list_all_teams_screen.dart';
+import 'package:interview/screens/score_board_screen.dart';
 import 'package:interview/utils/common/PackageConstants.dart';
 import 'package:interview/utils/common/RippleEffect/RippleEffectContainer.dart';
 import 'package:interview/utils/common/Text_Button.dart';
@@ -46,6 +47,11 @@ class DashboardScreen extends StatelessWidget {
         onTap: () async {
           // printDebug(DBHelper().getAllMatches());
           Navigation.pushMaterial(AllMatchScreen());
+        }),
+    GridItems(
+        title: "Score board",
+        onTap: () async {
+          Navigation.pushMaterial(ScoreBoardScreen());
         }),
   ];
   @override

@@ -2,6 +2,7 @@
 
 import 'package:interview/models/match_score_model.dart';
 import 'package:interview/models/match_with_teams_model.dart';
+import 'package:interview/models/score_board_model.dart';
 import 'package:interview/models/team_model.dart';
 import 'package:interview/utils/common/PackageConstants.dart';
 import 'package:sqflite/sqflite.dart';
@@ -322,5 +323,75 @@ class DBHelper {
         where: "match_id=? AND team_id=? AND player_id=?",
         whereArgs: [match_id, team_id, player_id]);
     return rowsAffected != 0;
+  }
+
+  Future<List<ScoreBoardModel>> getAllMatcheScore() async {
+    try {
+      final db = await openTeamDatabase();
+      // * get all matches
+      final matchRows = await db.query(match_table);
+
+      List<ScoreBoardModel> scores = [];
+
+      for (var match in matchRows) {
+        final int teamAId = match['team_a_id'] as int;
+        final int teamBId = match['team_b_id'] as int;
+
+        // * get all team A info
+        final teamAData =
+            await db.query(team_table, where: 'id = ?', whereArgs: [teamAId]);
+        // * get all team A players
+        final teamAMembers = await db.query(team_member_table,
+            where: 'team_id = ?', whereArgs: [teamAId]);
+
+        // * get all team B info
+        final teamBData =
+            await db.query(team_table, where: 'id = ?', whereArgs: [teamBId]);
+        // * get all team B players
+        final teamBMembers = await db.query(team_member_table,
+            where: 'team_id = ?', whereArgs: [teamBId]);
+
+        // * create team A list along with players
+        final List<TeamModel> teamAList = teamAData.map((teamMap) {
+          return TeamModel.fromMap(
+            teamMap,
+            teamAMembers.map((e) => TeamMembersModel.fromMap(e)).toList(),
+          );
+        }).toList();
+
+        // * create team B list along with players
+        final List<TeamModel> teamBList = teamBData.map((teamMap) {
+          return TeamModel.fromMap(
+            teamMap,
+            teamBMembers.map((e) => TeamMembersModel.fromMap(e)).toList(),
+          );
+        }).toList();
+
+        // * Create final list
+        scores.add(ScoreBoardModel(
+          id: match['id'].toString(),
+          date: match['date'].toString(),
+          place: match['place'].toString(),
+          total_overs: match['total_overs'].toString(),
+          team_a: teamAList,
+          team_b: teamBList,
+          totalRunATeam: 0,
+          totalRunBTeam: 0,
+          isMatchStarted: false,
+          totalBallATeam: 0,
+          totalBallBTeam: 0,
+          teamAName: await getTeamNameById(teamAList.first.id),
+          teamBName: await getTeamNameById(teamBList.first.id),
+          isMatchCompleted: false,
+          wonByTeamA: false,
+          winByRun: 0,
+        ));
+      }
+
+      return scores;
+    } catch (e) {
+      print("Error: $e");
+      return [];
+    }
   }
 }
